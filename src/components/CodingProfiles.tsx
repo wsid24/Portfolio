@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { SiCodeforces, SiLeetcode, SiCodechef, SiGithub } from "react-icons/si";
 import { FaCode } from "react-icons/fa";
 
@@ -16,7 +16,7 @@ interface ProfileCardProps {
 }
 
 function ProfileCard({ platform, rating, extra, link, accent, icon, index }: ProfileCardProps) {
-    const [isHovered, setIsHovered] = useState(false);
+    const [, setIsHovered] = useState(false);
     const cardRef = useRef<HTMLAnchorElement>(null);
 
     const x = useMotionValue(0);
