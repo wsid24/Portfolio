@@ -50,7 +50,6 @@ export default function Navbar() {
         });
 
         return () => observer.disconnect();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const scrollToSection = (id: string) => {
@@ -74,8 +73,8 @@ export default function Navbar() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
             className={`fixed left-0 right-0 top-0 z-50 w-full border-b transition-all duration-300 ${scrolled
-                ? "border-white/20 bg-black/70 shadow-lg shadow-black/20 backdrop-blur-xl"
-                : "border-white/10 bg-black/40 backdrop-blur-lg"
+                    ? "border-white/20 bg-black/70 shadow-lg shadow-black/20 backdrop-blur-xl"
+                    : "border-white/10 bg-black/40 backdrop-blur-lg"
                 }`}
         >
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -97,8 +96,8 @@ export default function Navbar() {
                                 key={link.id}
                                 onClick={() => scrollToSection(link.id)}
                                 className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 ${activeSection === link.id
-                                    ? "text-cyan-400"
-                                    : "text-gray-300 hover:text-white"
+                                        ? "text-cyan-400"
+                                        : "text-gray-300 hover:text-white"
                                     }`}
                             >
                                 {link.name}
@@ -149,8 +148,8 @@ export default function Navbar() {
                                     key={link.id}
                                     onClick={() => scrollToSection(link.id)}
                                     className={`block w-full rounded-lg px-4 py-3 text-left text-sm font-medium transition-all duration-300 ${activeSection === link.id
-                                        ? "bg-cyan-500/20 text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)]"
-                                        : "text-gray-300 hover:bg-white/10 hover:text-white"
+                                            ? "bg-cyan-500/20 text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)]"
+                                            : "text-gray-300 hover:bg-white/10 hover:text-white"
                                         }`}
                                 >
                                     {link.name}
