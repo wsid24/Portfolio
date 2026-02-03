@@ -54,12 +54,11 @@ export default function AchievementCard({
             viewport={{ once: true }}
             transition={{ delay: index * 0.1, duration: 0.4 }}
             whileHover={{ y: -5 }}
-            className={`rounded-xl border ${styles.border} bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 ${styles.glow
-                } ${isLarge ? "md:col-span-2" : ""}`}
+            className={`rounded-xl border ${styles.border} bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 ${styles.glow} h-full flex flex-col`}
         >
             {/* Icon */}
-            <div className={`mb-4 inline-flex rounded-lg ${styles.iconBg} p-3`}>
-                <FaTrophy className={`text-2xl ${styles.text}`} />
+            <div className="mb-4">
+                <FaTrophy className={`text-3xl ${styles.text}`} />
             </div>
 
             {/* Title */}
@@ -72,7 +71,7 @@ export default function AchievementCard({
             <p className="mb-4 text-sm text-gray-400">{detail}</p>
 
             {/* Buttons */}
-            <div className="flex flex-wrap gap-3">
+            <div className="mt-auto flex flex-wrap gap-3">
                 {proofLink && (
                     <a
                         href={proofLink}

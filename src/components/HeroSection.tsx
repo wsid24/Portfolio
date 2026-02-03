@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { FaGithub, FaLinkedin, FaFileDownload, FaEnvelope } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaExternalLinkAlt, FaEnvelope } from "react-icons/fa";
 import BackgroundLines from "./BackgroundLines";
 
 export default function HeroSection() {
@@ -88,11 +88,12 @@ export default function HeroSection() {
                             </a>
 
                             <a
-                                href="/Resume_SiddhantWani.pdf"
-                                download
+                                href="https://drive.google.com/file/d/1iURHR70w8TE5m4nsQcFbM0ehokiUtC_r/view?usp=sharing"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="group inline-flex items-center gap-2 rounded-lg border border-purple-500/50 bg-purple-500/10 px-6 py-3 font-medium text-purple-400 transition-all duration-300 hover:-translate-y-1 hover:border-purple-400 hover:bg-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
                             >
-                                <FaFileDownload className="text-xl" />
+                                <FaExternalLinkAlt className="text-xl" />
                                 <span>Resume</span>
                             </a>
 

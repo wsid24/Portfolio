@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FaEnvelope, FaPhone, FaGithub, FaLinkedin, FaFileDownload, FaCopy, FaCheck } from "react-icons/fa";
+import { FaEnvelope, FaPhone, FaGithub, FaLinkedin, FaExternalLinkAlt, FaCopy, FaCheck } from "react-icons/fa";
 import { useState } from "react";
 
 interface ContactCardProps {
@@ -104,11 +104,10 @@ export default function ContactSection() {
             link: "https://linkedin.com/in/siddhant-wani-6059972a5",
         },
         {
-            icon: <FaFileDownload />,
+            icon: <FaExternalLinkAlt />,
             label: "Resume",
-            value: "Download PDF",
-            link: "/Resume_SiddhantWani.pdf",
-            download: true,
+            value: "View Resume",
+            link: "https://drive.google.com/file/d/1iURHR70w8TE5m4nsQcFbM0ehokiUtC_r/view?usp=sharing",
         },
     ];
 
