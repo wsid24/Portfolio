@@ -10,11 +10,10 @@ interface ContactCardProps {
     value: string;
     link?: string;
     copyable?: boolean;
-    download?: boolean;
     index: number;
 }
 
-function ContactCard({ icon, label, value, link, copyable, download, index }: ContactCardProps) {
+function ContactCard({ icon, label, value, link, copyable, index }: ContactCardProps) {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
@@ -63,9 +62,8 @@ function ContactCard({ icon, label, value, link, copyable, download, index }: Co
         return (
             <a
                 href={link}
-                target={download ? undefined : "_blank"}
-                rel={download ? undefined : "noopener noreferrer"}
-                download={download}
+                target="_blank"
+                rel="noopener noreferrer"
             >
                 {content}
             </a>
@@ -136,7 +134,6 @@ export default function ContactSection() {
                         value={contact.value}
                         link={contact.link}
                         copyable={contact.copyable}
-                        download={contact.download}
                         index={index}
                     />
                 ))}
