@@ -114,7 +114,7 @@ export default function HeroSection() {
     const socials = [
         { icon: <FaGithub />, href: "https://github.com/wsid24", label: "GitHub", color: "#e6edf3" },
         { icon: <SiLeetcode />, href: "https://leetcode.com/u/w_SiD24/", label: "LeetCode", color: "#FFA116" },
-        { icon: <FaXTwitter />, href: "#", label: "X", color: "#ffffff" },
+        { icon: <FaXTwitter />, href: "https://x.com/w_SiD1024", label: "X", color: "#ffffff" },
         { icon: <FaLinkedin />, href: "https://linkedin.com/in/siddhant-wani-6059972a5", label: "LinkedIn", color: "#0A66C2" },
         { icon: <FaEnvelope />, href: "mailto:siddhantpwani@gmail.com", label: "Email", color: "#EA4335" },
     ];
