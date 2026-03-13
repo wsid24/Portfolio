@@ -1,175 +1,92 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { FaGithub, FaBars, FaTimes } from "react-icons/fa";
+import { FaHome, FaUser, FaTrophy, FaGraduationCap, FaWrench, FaFolder, FaFileAlt } from "react-icons/fa";
 
 export default function Navbar() {
     const [activeSection, setActiveSection] = useState("home");
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
 
     const navLinks = [
-        { name: "Home", id: "home" },
-        { name: "Profiles", id: "profiles" },
-        { name: "Skills", id: "skills" },
-        { name: "Projects", id: "projects" },
-        { name: "Leadership", id: "leadership" },
-        { name: "Achievements", id: "achievements" },
-        { name: "Contact", id: "contact" },
+        { id: "home", icon: FaHome, label: "Home" },
+        { id: "about", icon: FaUser, label: "About" },
+        { id: "profiles", icon: FaTrophy, label: "CP" },
+        { id: "education", icon: FaGraduationCap, label: "Education" },
+        { id: "skills", icon: FaWrench, label: "Skills" },
+        { id: "projects", icon: FaFolder, label: "Projects" },
+        { id: "resume", icon: FaFileAlt, label: "Resume" },
     ];
 
-    // Track scroll position for navbar background
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    // Improved active section tracking
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
-                        setActiveSection(entry.target.id);
+            const sections = navLinks.map((l) => l.id);
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const el = document.getElementById(sections[i]);
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= 200) {
+                        setActiveSection(sections[i]);
+                        break;
                     }
-                });
-            },
-            {
-                threshold: [0.3, 0.5, 0.7],
-                rootMargin: "-80px 0px -50% 0px"
+                }
             }
-        );
-
-        navLinks.forEach(({ id }) => {
-            const element = document.getElementById(id);
-            if (element) observer.observe(element);
-        });
-
-        return () => observer.disconnect();
+        };
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener("scroll", handleScroll);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const scrollToSection = (id: string) => {
-        const element = document.getElementById(id);
-        if (element) {
-            const navbarHeight = 80;
-            const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: "smooth"
-            });
-            setIsMobileMenuOpen(false);
+        if (id === "resume") {
+            window.open("https://drive.google.com/file/d/1iURHR70w8TE5m4nsQcFbM0ehokiUtC_r/view?usp=sharing", "_blank");
+            return;
         }
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
     };
 
     return (
         <motion.nav
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className={`fixed left-0 right-0 top-0 z-50 w-full border-b transition-all duration-300 ${scrolled
-                    ? "border-white/20 bg-black/70 shadow-lg shadow-black/20 backdrop-blur-xl"
-                    : "border-white/10 bg-black/40 backdrop-blur-lg"
-                }`}
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5, type: "spring", stiffness: 100 }}
+            className="fixed top-6 right-4 z-50 rounded-2xl border border-white/[0.08] bg-[#0a0a0a]/80 px-2 py-3 shadow-2xl shadow-black/50 backdrop-blur-2xl"
         >
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center justify-between">
-                    {/* Brand */}
-                    <button
-                        onClick={() => scrollToSection("home")}
-                        className="group text-xl font-bold text-white transition-all duration-300 hover:text-cyan-400"
-                    >
-                        <span className="bg-gradient-to-r from-white to-cyan-400 bg-clip-text transition-all duration-300 group-hover:from-cyan-400 group-hover:to-purple-400">
-                            Siddhant Wani
-                        </span>
-                    </button>
+            <ul className="flex flex-col items-center gap-1">
+                {navLinks.map((link) => {
+                    const Icon = link.icon;
+                    const isActive = activeSection === link.id;
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden items-center gap-1 md:flex">
-                        {navLinks.map((link) => (
+                    return (
+                        <li key={link.id} className="relative">
                             <button
-                                key={link.id}
                                 onClick={() => scrollToSection(link.id)}
-                                className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 ${activeSection === link.id
-                                        ? "text-cyan-400"
-                                        : "text-gray-300 hover:text-white"
-                                    }`}
+                                className={`group relative flex items-center justify-center rounded-xl p-2.5 transition-all duration-300
+                                    ${isActive ? "text-white" : "text-gray-500 hover:text-gray-300"}
+                                `}
+                                aria-label={link.label}
                             >
-                                {link.name}
-                                {activeSection === link.id && (
+                                <Icon className="text-2xl transition-transform duration-300 group-hover:scale-110" />
+
+                                {/* Tooltip — left side */}
+                                <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white opacity-0 backdrop-blur-xl transition-all duration-200 group-hover:opacity-100">
+                                    {link.label}
+                                </span>
+
+                                {/* Active indicator */}
+                                {isActive && (
                                     <motion.div
-                                        layoutId="activeSection"
-                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]"
-                                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                        layoutId="activeNavBg"
+                                        className="absolute inset-0 rounded-xl border border-white/10 bg-white/[0.06]"
+                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                     />
                                 )}
                             </button>
-                        ))}
-
-                        {/* GitHub Icon */}
-                        <a
-                            href="https://github.com/wsid24"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="ml-2 rounded-lg p-2 text-gray-300 transition-all duration-300 hover:bg-white/10 hover:text-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.3)]"
-                        >
-                            <FaGithub className="text-xl" />
-                        </a>
-                    </div>
-
-                    {/* Mobile Menu Button */}
-                    <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="rounded-lg p-2 text-gray-300 transition-colors hover:bg-white/10 hover:text-white md:hidden"
-                    >
-                        {isMobileMenuOpen ? <FaTimes className="text-xl" /> : <FaBars className="text-xl" />}
-                    </button>
-                </div>
-            </div>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {isMobileMenuOpen && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden border-t border-white/10 bg-black/80 backdrop-blur-xl md:hidden"
-                    >
-                        <div className="space-y-1 px-4 py-4">
-                            {navLinks.map((link) => (
-                                <button
-                                    key={link.id}
-                                    onClick={() => scrollToSection(link.id)}
-                                    className={`block w-full rounded-lg px-4 py-3 text-left text-sm font-medium transition-all duration-300 ${activeSection === link.id
-                                            ? "bg-cyan-500/20 text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)]"
-                                            : "text-gray-300 hover:bg-white/10 hover:text-white"
-                                        }`}
-                                >
-                                    {link.name}
-                                </button>
-                            ))}
-
-                            {/* GitHub Link in Mobile */}
-                            <a
-                                href="https://github.com/wsid24"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-gray-300 transition-all duration-300 hover:bg-white/10 hover:text-white"
-                            >
-                                <FaGithub className="text-lg" />
-                                <span>GitHub</span>
-                            </a>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        </li>
+                    );
+                })}
+            </ul>
         </motion.nav>
     );
 }

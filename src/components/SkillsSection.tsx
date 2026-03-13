@@ -1,119 +1,132 @@
 "use client";
 
 import { motion } from "framer-motion";
+import {
+    SiCplusplus, SiPython, SiJavascript, SiReact, SiNextdotjs,
+    SiNodedotjs, SiExpress, SiSocketdotio, SiMongodb,
+    SiGit, SiGithub, SiPostman, SiVercel, SiCmake, SiRender,
+    SiTailwindcss, SiDocker
+} from "react-icons/si";
+import { FaJava, FaDatabase, FaNetworkWired, FaServer, FaCodeBranch, FaCubes } from "react-icons/fa";
 
-interface SkillGroupProps {
-    title: string;
-    skills: string[];
-    index: number;
-    highlight?: boolean;
+interface SkillBadge {
+    name: string;
+    icon: React.ReactNode;
 }
 
-function SkillGroup({ title, skills, index, highlight = false }: SkillGroupProps) {
-    const containerVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                delay: index * 0.1,
-                duration: 0.4,
-            },
-        },
-    };
+interface SkillCategory {
+    title: string;
+    skills: SkillBadge[];
+}
 
+function Badge({ name, icon }: SkillBadge) {
     return (
-        <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            className={`rounded-xl border backdrop-blur-sm transition-all duration-300 ${highlight
-                    ? "border-purple-500/40 bg-purple-500/5 hover:border-purple-400/60 hover:shadow-[0_0_25px_rgba(168,85,247,0.2)]"
-                    : "border-white/10 bg-white/5 hover:border-cyan-500/40 hover:shadow-[0_0_20px_rgba(34,211,238,0.15)]"
-                } p-6`}
-        >
-            <h3 className={`mb-4 text-xl font-semibold ${highlight ? "text-purple-300" : "text-cyan-300"}`}>
-                {title}
-            </h3>
-            <div className="flex flex-wrap gap-2.5">
-                {skills.map((skill, idx) => (
-                    <motion.span
-                        key={skill}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 + idx * 0.03, duration: 0.3 }}
-                        whileHover={{ scale: 1.05 }}
-                        className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${highlight
-                                ? "bg-purple-500/20 text-purple-200 hover:bg-purple-500/30"
-                                : "bg-cyan-500/15 text-gray-300 hover:bg-cyan-500/25"
-                            }`}
-                    >
-                        {skill}
-                    </motion.span>
-                ))}
-            </div>
-        </motion.div>
+        <div className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3.5 py-2 text-sm text-gray-300 hover:bg-white/[0.06] transition-colors">
+            <span className="text-base">{icon}</span>
+            <span>{name}</span>
+        </div>
     );
 }
 
 export default function SkillsSection() {
-    const skillGroups = [
+    const coreSubjects: SkillBadge[] = [
+        { name: "Data Structures & Algorithms", icon: <FaCubes /> },
+        { name: "Object-Oriented Programming", icon: <FaCodeBranch /> },
+        { name: "Database Management Systems", icon: <FaDatabase /> },
+        { name: "Computer Networks", icon: <FaNetworkWired /> },
+        { name: "Operating Systems", icon: <FaServer /> },
+        { name: "System Design", icon: <FaCubes /> },
+    ];
+
+    const categories: SkillCategory[] = [
         {
-            title: "Languages",
-            skills: ["C++", "Python", "Java", "JavaScript"],
-            highlight: false,
-        },
-        {
-            title: "Frameworks & Backend",
-            skills: ["React", "Node.js", "Express.js", "Socket.IO"],
-            highlight: false,
-        },
-        {
-            title: "Databases & Tools",
-            skills: ["MongoDB", "Git", "CMake", "Postman", "Vercel", "Render"],
-            highlight: false,
-        },
-        {
-            title: "Core CS Fundamentals",
+            title: "LANGUAGES",
             skills: [
-                "Object Oriented Programming (OOPS)",
-                "Operating Systems",
-                "DBMS",
-                "Computer Networks",
-                "Data Structures & Algorithms",
-                "System Design Basics",
+                { name: "C++", icon: <SiCplusplus className="text-[#00599C]" /> },
+                { name: "Java", icon: <FaJava className="text-[#007396]" /> },
+                { name: "Python", icon: <SiPython className="text-[#3776AB]" /> },
+                { name: "JavaScript", icon: <SiJavascript className="text-[#F7DF1E]" /> },
             ],
-            highlight: true,
+        },
+        {
+            title: "FRAMEWORKS & LIBRARIES",
+            skills: [
+                { name: "React", icon: <SiReact className="text-[#61DAFB]" /> },
+                { name: "Next.js", icon: <SiNextdotjs /> },
+                { name: "Node.js", icon: <SiNodedotjs className="text-[#339933]" /> },
+                { name: "Express.js", icon: <SiExpress /> },
+                { name: "Socket.IO", icon: <SiSocketdotio /> },
+                { name: "Tailwind CSS", icon: <SiTailwindcss className="text-[#06B6D4]" /> },
+            ],
+        },
+        {
+            title: "DATABASES & SERVICES",
+            skills: [
+                { name: "MongoDB", icon: <SiMongodb className="text-[#47A248]" /> },
+            ],
+        },
+        {
+            title: "DEVELOPER TOOLS",
+            skills: [
+                { name: "Git", icon: <SiGit className="text-[#F05032]" /> },
+                { name: "GitHub", icon: <SiGithub /> },
+                { name: "CMake", icon: <SiCmake className="text-[#064F8C]" /> },
+                { name: "Postman", icon: <SiPostman className="text-[#FF6C37]" /> },
+                { name: "Vercel", icon: <SiVercel /> },
+                { name: "Render", icon: <SiRender className="text-[#46E3B7]" /> },
+                { name: "Docker", icon: <SiDocker className="text-[#2496ED]" /> },
+            ],
         },
     ];
 
     return (
         <section className="py-20">
+            {/* Core CS */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="mb-12"
+                className="mb-16"
             >
-                <h2 className="mb-4 text-4xl font-bold text-white md:text-5xl">
-                    Technical Skills
+                <h2 className="font-heading text-4xl text-white mb-8">
+                    <span className="brushstroke text-teal-400">Core</span>
                 </h2>
-                <p className="text-lg text-gray-400">
-                    Core competencies and technical expertise
-                </p>
+                <div className="flex flex-wrap gap-3">
+                    {coreSubjects.map((subject) => (
+                        <Badge key={subject.name} {...subject} />
+                    ))}
+                </div>
             </motion.div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {skillGroups.map((group, index) => (
-                    <SkillGroup
-                        key={group.title}
-                        title={group.title}
-                        skills={group.skills}
-                        index={index}
-                        highlight={group.highlight}
-                    />
+            {/* Skills */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+            >
+                <h2 className="font-heading text-4xl text-white mb-10">
+                    <span className="brushstroke text-teal-400">Skills</span>
+                </h2>
+            </motion.div>
+
+            <div className="space-y-10">
+                {categories.map((category, catIndex) => (
+                    <motion.div
+                        key={category.title}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: catIndex * 0.05 }}
+                    >
+                        <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">
+                            {category.title}
+                        </h3>
+                        <div className="flex flex-wrap gap-3">
+                            {category.skills.map((skill) => (
+                                <Badge key={skill.name} {...skill} />
+                            ))}
+                        </div>
+                    </motion.div>
                 ))}
             </div>
         </section>

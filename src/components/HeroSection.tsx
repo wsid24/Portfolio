@@ -1,115 +1,225 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import { SiLeetcode } from "react-icons/si";
 import Image from "next/image";
-import { FaGithub, FaLinkedin, FaExternalLinkAlt, FaEnvelope } from "react-icons/fa";
-import BackgroundLines from "./BackgroundLines";
+import { useEffect, useState, useMemo, useCallback } from "react";
+
+/* ──── Full-screen Animated Heatmap Grid ──── */
+
+function FullScreenHeatmap({ heatmap }: { heatmap: Record<string, number> }) {
+    // Build grid data — 14 rows × 28 columns
+    const ROWS = 14;
+    const COLS = 28;
+
+    const cells = useMemo(() => {
+        const now = new Date();
+        const result: {
+            count: number;
+            index: number;
+            animDelay: number;
+            animDuration: number;
+        }[] = [];
+        const totalCells = ROWS * COLS;
+        for (let i = 0; i < totalCells; i++) {
+            const date = new Date(now);
+            date.setDate(date.getDate() - (totalCells - i));
+            const ts = Math.floor(
+                new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
+            ).toString();
+
+            // Generate deterministic pseudo-random values based on index to ensure stable SSR/hydration
+            // Delay between 0s and 5s
+            const animDelay = (i * 137) % 5000 / 1000;
+            // Duration between 2s and 4s
+            const animDuration = 2 + ((i * 97) % 2000 / 1000);
+
+            result.push({
+                count: heatmap[ts] || 0,
+                index: i,
+                animDelay,
+                animDuration
+            });
+        }
+        return result;
+    }, [heatmap]);
+
+    const getColor = useCallback((count: number) => {
+        if (count === 0) return `rgba(20,184,166,0.18)`;
+        if (count <= 1) return `rgba(20,184,166,0.35)`;
+        if (count <= 3) return `rgba(20,184,166,0.5)`;
+        if (count <= 5) return `rgba(20,184,166,0.65)`;
+        if (count <= 8) return `rgba(20,184,166,0.85)`;
+        return `rgba(20,184,166,1)`;
+    }, []);
+
+    return (
+        <div
+            className="absolute inset-0 overflow-hidden pointer-events-none"
+            style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${COLS}, 1fr)`,
+                gridTemplateRows: `repeat(${ROWS}, 1fr)`,
+                gap: "3px",
+                padding: "3px",
+            }}
+        >
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @keyframes tile-breathe {
+                    0%, 100% { opacity: 0.2; filter: brightness(0.7); }
+                    50% { opacity: 1; filter: brightness(1.3); }
+                }
+            `}} />
+            {cells.map((cell) => (
+                <div
+                    key={cell.index}
+                    className="rounded-[4px] will-change-[opacity,filter]"
+                    style={{
+                        backgroundColor: getColor(cell.count),
+                        animation: `tile-breathe ${cell.animDuration}s ease-in-out infinite`,
+                        animationDelay: `${cell.animDelay}s`,
+                    }}
+                />
+            ))}
+            {/* Radial fade to blend edges into background */}
+            <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                    background: "radial-gradient(ellipse 70% 65% at center 40%, transparent 10%, #030303 85%)",
+                }}
+            />
+        </div>
+    );
+}
+
+/* ──── Main HeroSection ──── */
 
 export default function HeroSection() {
+    const [heatmap, setHeatmap] = useState<Record<string, number>>({});
+
+    useEffect(() => {
+        fetch("/api/leetcode")
+            .then((r) => r.json())
+            .then((data) => {
+                if (data.heatmap && Object.keys(data.heatmap).length > 0) {
+                    setHeatmap(data.heatmap);
+                }
+            })
+            .catch(() => { });
+    }, []);
+
+    const socials = [
+        { icon: <FaGithub />, href: "https://github.com/wsid24", label: "GitHub", color: "#e6edf3" },
+        { icon: <SiLeetcode />, href: "https://leetcode.com/u/w_SiD24/", label: "LeetCode", color: "#FFA116" },
+        { icon: <FaXTwitter />, href: "#", label: "X", color: "#ffffff" },
+        { icon: <FaLinkedin />, href: "https://linkedin.com/in/siddhant-wani-6059972a5", label: "LinkedIn", color: "#0A66C2" },
+        { icon: <FaEnvelope />, href: "mailto:siddhantpwani@gmail.com", label: "Email", color: "#EA4335" },
+    ];
+
     return (
-        <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-20">
-            <BackgroundLines />
+        <section className="relative flex flex-col items-center justify-center py-28 sm:py-36 text-center overflow-hidden min-h-[90vh]">
+            {/* Full-screen Animated Heatmap Background */}
+            <FullScreenHeatmap heatmap={heatmap} />
 
-            <div className="container relative z-10 mx-auto max-w-7xl">
-                <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
-                    {/* Left Column: Profile Image */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="flex justify-center lg:justify-end"
-                    >
-                        <div className="relative group">
-                            {/* Cyan Glow Effect */}
-                            <div className="absolute -inset-4 rounded-full bg-cyan-500/20 opacity-0 blur-2xl transition duration-500 group-hover:opacity-100" />
-
-                            {/* Glass Border Ring */}
-                            <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-cyan-500/30 to-purple-500/30 blur-sm" />
-
-                            {/* Image Container */}
-                            <div className="relative h-72 w-72 overflow-hidden rounded-full border-4 border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-500 group-hover:scale-105 group-hover:border-cyan-500/30 md:h-80 md:w-80 lg:h-[320px] lg:w-[320px]">
-                                <Image
-                                    src="/profile.png"
-                                    alt="Siddhant Wani"
-                                    fill
-                                    className="object-cover"
-                                    priority
-                                />
-                            </div>
-                        </div>
-                    </motion.div>
-
-                    {/* Right Column: Content */}
-                    <div className="text-center lg:text-left">
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="max-w-3xl space-y-6"
-                        >
-                            <h1 className="mb-4 text-6xl font-bold tracking-tight text-white md:text-7xl">
-                                Siddhant Wani
-                            </h1>
-
-                            <h2 className="bg-gradient-to-r from-cyan-400 via-cyan-300 to-purple-400 bg-clip-text text-lg font-semibold text-transparent md:text-xl lg:text-2xl">
-                                AI & Data Science Engineer | Competitive Programmer | Full-Stack Developer
-                            </h2>
-
-                            <p className="text-base leading-relaxed text-gray-300 md:text-lg">
-                                I am a third-year Artificial Intelligence and Data Science student passionate about solving complex algorithmic problems and building scalable real-world applications. With strong foundations in Data Structures & Algorithms and hands-on experience in C++ and the MERN stack, I enjoy combining efficient system design with practical implementation while mentoring peers and exploring emerging technologies like Large Language Models to build clean, impactful solutions.
-                            </p>
-                        </motion.div>
-
-                        {/* Buttons */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.4 }}
-                            className="flex flex-wrap justify-center gap-4 pt-4 lg:justify-start"
-                        >
-                            <a
-                                href="https://github.com/wsid24"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group inline-flex items-center gap-2 rounded-lg border border-cyan-500/50 bg-cyan-500/10 px-6 py-3 font-medium text-cyan-400 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400 hover:bg-cyan-500/20 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)]"
-                            >
-                                <FaGithub className="text-xl" />
-                                <span>GitHub</span>
-                            </a>
-
-                            <a
-                                href="https://linkedin.com/in/siddhant-wani-6059972a5"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group inline-flex items-center gap-2 rounded-lg border border-cyan-500/50 bg-cyan-500/10 px-6 py-3 font-medium text-cyan-400 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400 hover:bg-cyan-500/20 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)]"
-                            >
-                                <FaLinkedin className="text-xl" />
-                                <span>LinkedIn</span>
-                            </a>
-
-                            <a
-                                href="https://drive.google.com/file/d/1iURHR70w8TE5m4nsQcFbM0ehokiUtC_r/view?usp=sharing"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group inline-flex items-center gap-2 rounded-lg border border-purple-500/50 bg-purple-500/10 px-6 py-3 font-medium text-purple-400 transition-all duration-300 hover:-translate-y-1 hover:border-purple-400 hover:bg-purple-500/20 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
-                            >
-                                <FaExternalLinkAlt className="text-xl" />
-                                <span>Resume</span>
-                            </a>
-
-                            <button
-                                onClick={() => {
-                                    document.querySelector('#contact')?.scrollIntoView({ behavior: "smooth" });
-                                }}
-                                className="group inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-6 py-3 font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:border-white/40 hover:bg-white/10 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-                            >
-                                <FaEnvelope className="text-xl" />
-                                <span>Contact</span>
-                            </button>
-                        </motion.div>
+            {/* Avatar — large size */}
+            <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                className="relative mb-8 z-10"
+            >
+                <div className="relative h-36 w-36 sm:h-44 sm:w-44 overflow-hidden rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 p-[3px] shadow-[0_0_40px_rgba(20,184,166,0.25)]">
+                    <div className="h-full w-full rounded-full overflow-hidden bg-[#030303]">
+                        <Image
+                            src="/profile.png"
+                            alt="Siddhant Wani"
+                            width={176}
+                            height={176}
+                            className="h-full w-full object-cover"
+                            priority
+                        />
                     </div>
                 </div>
-            </div>
+            </motion.div>
+
+            {/* Name */}
+            <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="font-heading text-5xl sm:text-6xl lg:text-7xl text-white mb-4 z-10"
+            >
+                Siddhant Wani
+            </motion.h1>
+
+            {/* Title */}
+            <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="text-xs sm:text-sm tracking-[0.25em] uppercase text-gray-400 mb-4 font-medium z-10"
+            >
+                Full Stack Developer | Competitive Programmer
+            </motion.p>
+
+            {/* Quick stats under name */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+                className="mb-8 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500 z-10"
+            >
+                <span className="flex items-center gap-1.5">
+                    📍 Pune, India
+                </span>
+                <span className="hidden sm:inline text-white/10">|</span>
+                <span className="flex items-center gap-1.5">
+                    🎓 BE — AI & Data Science
+                </span>
+                <span className="hidden sm:inline text-white/10">|</span>
+                <span className="flex items-center gap-1.5">
+                    🏆 Expert on Codeforces
+                </span>
+            </motion.div>
+
+            {/* Available badge */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="mb-10 flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 backdrop-blur-md z-10"
+            >
+                <span className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+                </span>
+                Available for opportunities
+            </motion.div>
+
+            {/* Social Icons — colorful */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="flex items-center gap-4 z-10"
+            >
+                {socials.map((social) => (
+                    <a
+                        key={social.label}
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={social.label}
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:scale-110 backdrop-blur-sm"
+                        style={{ color: social.color }}
+                    >
+                        {social.icon}
+                    </a>
+                ))}
+            </motion.div>
         </section>
     );
 }

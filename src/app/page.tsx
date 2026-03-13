@@ -1,12 +1,11 @@
 import Layout from "@/components/Layout";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import AboutSection from "@/components/AboutSection";
 import CodingProfiles from "@/components/CodingProfiles";
+import EducationSection from "@/components/EducationSection";
 import SkillsSection from "@/components/SkillsSection";
 import ProjectsSection from "@/components/ProjectsSection";
-import LeadershipSection from "@/components/LeadershipSection";
-import AchievementsSection from "@/components/AchievementsSection";
-import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -17,8 +16,14 @@ export default function Home() {
         <div id="home">
           <HeroSection />
         </div>
+        <div id="about">
+          <AboutSection />
+        </div>
         <div id="profiles">
           <CodingProfiles />
+        </div>
+        <div id="education">
+          <EducationSection />
         </div>
         <div id="skills">
           <SkillsSection />
@@ -26,16 +31,9 @@ export default function Home() {
         <div id="projects">
           <ProjectsSection />
         </div>
-        <div id="leadership">
-          <LeadershipSection />
+        <div id="resume">
+          <Footer />
         </div>
-        <div id="achievements">
-          <AchievementsSection />
-        </div>
-        <div id="contact">
-          <ContactSection />
-        </div>
-        <Footer />
       </Layout>
     </>
   );
