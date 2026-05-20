@@ -1,225 +1,191 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { SiLeetcode } from "react-icons/si";
 import Image from "next/image";
-import { useEffect, useState, useMemo, useCallback } from "react";
 
-/* ──── Full-screen Animated Heatmap Grid ──── */
+const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
 
-function FullScreenHeatmap({ heatmap }: { heatmap: Record<string, number> }) {
-    // Build grid data — 14 rows × 28 columns
-    const ROWS = 14;
-    const COLS = 28;
-
-    const cells = useMemo(() => {
-        const now = new Date();
-        const result: {
-            count: number;
-            index: number;
-            animDelay: number;
-            animDuration: number;
-        }[] = [];
-        const totalCells = ROWS * COLS;
-        for (let i = 0; i < totalCells; i++) {
-            const date = new Date(now);
-            date.setDate(date.getDate() - (totalCells - i));
-            const ts = Math.floor(
-                new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() / 1000
-            ).toString();
-
-            // Generate deterministic pseudo-random values based on index to ensure stable SSR/hydration
-            // Delay between 0s and 5s
-            const animDelay = (i * 137) % 5000 / 1000;
-            // Duration between 2s and 4s
-            const animDuration = 2 + ((i * 97) % 2000 / 1000);
-
-            result.push({
-                count: heatmap[ts] || 0,
-                index: i,
-                animDelay,
-                animDuration
-            });
-        }
-        return result;
-    }, [heatmap]);
-
-    const getColor = useCallback((count: number) => {
-        if (count === 0) return `rgba(20,184,166,0.18)`;
-        if (count <= 1) return `rgba(20,184,166,0.35)`;
-        if (count <= 3) return `rgba(20,184,166,0.5)`;
-        if (count <= 5) return `rgba(20,184,166,0.65)`;
-        if (count <= 8) return `rgba(20,184,166,0.85)`;
-        return `rgba(20,184,166,1)`;
-    }, []);
-
+/* ───────── Circular "Let's talk" CTA ───────── */
+function LetsTalk() {
     return (
-        <div
-            className="absolute inset-0 overflow-hidden pointer-events-none"
-            style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${COLS}, 1fr)`,
-                gridTemplateRows: `repeat(${ROWS}, 1fr)`,
-                gap: "3px",
-                padding: "3px",
-            }}
+        <a
+            href="tel:+918421036266"
+            aria-label="Let's connect — call +91 8421036266"
+            title="+91 8421036266"
+            className="group relative flex h-28 w-28 items-center justify-center sm:h-32 sm:w-32"
         >
+            {/* Rotating text ring */}
+            <svg viewBox="0 0 120 120" className="absolute inset-0 spin-slow text-[var(--fg)]">
+                <defs>
+                    {/* Full circle path */}
+                    <path
+                        id="circle-path"
+                        d="M 60,60 m -48,0 a 48,48 0 1,1 96,0 a 48,48 0 1,1 -96,0"
+                    />
+                </defs>
+                <text
+                    fill="currentColor"
+                    className="font-heading"
+                    style={{ fontSize: "11px", letterSpacing: "0.24em" }}
+                >
+                    <textPath href="#circle-path" startOffset="0">
+                        LET&apos;S CONNECT · LET&apos;S CONNECT ·
+                    </textPath>
+                </text>
+            </svg>
+            {/* Center button — phone */}
+            <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[var(--fg)] text-[var(--bg)] shadow-[0_8px_24px_-8px_rgba(0,0,0,0.45)] transition-transform group-hover:scale-110 sm:h-16 sm:w-16">
+                <FaPhoneAlt className="text-base transition-transform group-hover:-rotate-12 sm:text-lg" />
+            </span>
+        </a>
+    );
+}
+
+/* ───────── Aurora blobs (theme-aware) ───────── */
+function AuroraBlobs() {
+    return (
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
             <style dangerouslySetInnerHTML={{
                 __html: `
-                @keyframes tile-breathe {
-                    0%, 100% { opacity: 0.2; filter: brightness(0.7); }
-                    50% { opacity: 1; filter: brightness(1.3); }
-                }
+                @keyframes blob-1 { 0%,100% { transform: translate(-5%,-5%) scale(1); } 50% { transform: translate(8%,12%) scale(1.15); } }
+                @keyframes blob-2 { 0%,100% { transform: translate(10%,15%) scale(1); } 50% { transform: translate(-8%,-8%) scale(1.2); } }
+                @keyframes blob-3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(6%,-10%) scale(1.1); } }
+                .blob-1 { animation: blob-1 22s ease-in-out infinite; }
+                .blob-2 { animation: blob-2 26s ease-in-out infinite; }
+                .blob-3 { animation: blob-3 30s ease-in-out infinite; }
             `}} />
-            {cells.map((cell) => (
-                <div
-                    key={cell.index}
-                    className="rounded-[4px] will-change-[opacity,filter]"
-                    style={{
-                        backgroundColor: getColor(cell.count),
-                        animation: `tile-breathe ${cell.animDuration}s ease-in-out infinite`,
-                        animationDelay: `${cell.animDelay}s`,
-                    }}
-                />
-            ))}
-            {/* Radial fade to blend edges into background */}
-            <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                    background: "radial-gradient(ellipse 70% 65% at center 40%, transparent 10%, #030303 85%)",
-                }}
-            />
+            <div className="blob-1 absolute -left-32 top-1/4 h-[28rem] w-[28rem] rounded-full blur-[110px]"
+                style={{ background: "radial-gradient(circle, var(--blob-1) 0%, transparent 70%)" }} />
+            <div className="blob-2 absolute -right-32 top-1/3 h-[24rem] w-[24rem] rounded-full blur-[110px]"
+                style={{ background: "radial-gradient(circle, var(--blob-2) 0%, transparent 70%)" }} />
+            <div className="blob-3 absolute left-1/3 bottom-0 h-[18rem] w-[18rem] rounded-full blur-[90px]"
+                style={{ background: "radial-gradient(circle, var(--blob-3) 0%, transparent 70%)" }} />
         </div>
     );
 }
 
-/* ──── Main HeroSection ──── */
-
+/* ───────── Hero ───────── */
 export default function HeroSection() {
-    const [heatmap, setHeatmap] = useState<Record<string, number>>({});
-
-    useEffect(() => {
-        fetch("/api/leetcode")
-            .then((r) => r.json())
-            .then((data) => {
-                if (data.heatmap && Object.keys(data.heatmap).length > 0) {
-                    setHeatmap(data.heatmap);
-                }
-            })
-            .catch(() => { });
-    }, []);
-
     const socials = [
-        { icon: <FaGithub />, href: "https://github.com/wsid24", label: "GitHub", color: "#e6edf3" },
-        { icon: <SiLeetcode />, href: "https://leetcode.com/u/w_SiD24/", label: "LeetCode", color: "#FFA116" },
-        { icon: <FaXTwitter />, href: "https://x.com/w_SiD1024", label: "X", color: "#ffffff" },
-        { icon: <FaLinkedin />, href: "https://linkedin.com/in/siddhant-wani-6059972a5", label: "LinkedIn", color: "#0A66C2" },
-        { icon: <FaEnvelope />, href: "mailto:siddhantpwani@gmail.com", label: "Email", color: "#EA4335" },
+        { icon: <FaGithub />, href: "https://github.com/wsid24", label: "GitHub" },
+        { icon: <SiLeetcode />, href: "https://leetcode.com/u/w_SiD24/", label: "LeetCode" },
+        { icon: <FaXTwitter />, href: "https://x.com/w_SiD1024", label: "X" },
+        { icon: <FaLinkedin />, href: "https://linkedin.com/in/siddhant-wani-6059972a5", label: "LinkedIn" },
+        { icon: <FaEnvelope />, href: "mailto:siddhantpwani@gmail.com", label: "Email" },
     ];
 
     return (
-        <section className="relative flex flex-col items-center justify-center py-28 sm:py-36 text-center overflow-hidden min-h-[90vh]">
-            {/* Full-screen Animated Heatmap Background */}
-            <FullScreenHeatmap heatmap={heatmap} />
+        <section className="relative pt-28 sm:pt-32">
+            <AuroraBlobs />
 
-            {/* Avatar — large size */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-                className="relative mb-8 z-10"
-            >
-                <div className="relative h-36 w-36 sm:h-44 sm:w-44 overflow-hidden rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 p-[3px] shadow-[0_0_40px_rgba(20,184,166,0.25)]">
-                    <div className="h-full w-full rounded-full overflow-hidden bg-[#030303]">
-                        <Image
-                            src="/profile.png"
-                            alt="Siddhant Wani"
-                            width={176}
-                            height={176}
-                            className="h-full w-full object-cover"
-                            priority
-                        />
+            <div className="relative mx-auto flex max-w-6xl flex-col items-center px-4">
+                {/* Stage — photo + flanking rails. Wide enough that rails sit OUTSIDE the photo. */}
+                <div className="relative mx-auto w-full max-w-[820px]">
+                    <div className="relative mx-auto aspect-[5/4] w-full max-w-[460px]">
+                        {/* Portrait — clean rounded rectangle, no dome */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 24 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1.1, ease: EASE_OUT_EXPO, delay: 0.2 }}
+                            className="absolute inset-0 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-elev)] shadow-[0_30px_60px_-30px_rgba(0,0,0,0.18)]"
+                        >
+                            <Image
+                                src="/profile.png"
+                                alt="Siddhant Wani"
+                                fill
+                                priority
+                                sizes="(max-width: 768px) 90vw, 460px"
+                                className="select-none object-cover"
+                            />
+                        </motion.div>
+
+                        {/* Left social rail — sits OUTSIDE the photo's left edge */}
+                        <ul className="absolute right-full top-1/2 z-20 mr-6 hidden -translate-y-1/2 flex-col gap-4 sm:flex">
+                            {socials.map((s, i) => (
+                                <motion.li
+                                    key={s.label}
+                                    initial={{ opacity: 0, x: -12 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 0.6, ease: EASE_OUT_EXPO, delay: 0.6 + i * 0.06 }}
+                                >
+                                    <a
+                                        href={s.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label={s.label}
+                                        className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-elev)] text-[var(--fg-soft)] backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-[var(--fg)] hover:text-[var(--bg)]"
+                                    >
+                                        {s.icon}
+                                    </a>
+                                </motion.li>
+                            ))}
+                        </ul>
+
+                        {/* Let's Connect — sits at the top-right, outside the photo */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.7 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.9, ease: EASE_OUT_EXPO, delay: 0.85 }}
+                            className="absolute left-full top-4 z-20 ml-4 hidden sm:block"
+                        >
+                            <LetsTalk />
+                        </motion.div>
                     </div>
                 </div>
-            </motion.div>
 
-            {/* Name */}
-            <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="font-heading text-5xl sm:text-6xl lg:text-7xl text-white mb-4 z-10"
-            >
-                Siddhant Wani
-            </motion.h1>
+                {/* Available pill */}
+                <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, ease: EASE_OUT_EXPO, delay: 1.1 }}
+                    className="mt-6 flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-elev)]/70 px-3.5 py-1.5 text-xs text-[var(--fg-soft)] backdrop-blur"
+                >
+                    <span className="relative flex h-2 w-2">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" />
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                    </span>
+                    Available for opportunities
+                </motion.div>
 
-            {/* Title */}
-            <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-xs sm:text-sm tracking-[0.25em] uppercase text-gray-400 mb-4 font-medium z-10"
-            >
-                Full Stack Developer | Competitive Programmer
-            </motion.p>
+                {/* Big name */}
+                <motion.h1
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: EASE_OUT_EXPO, delay: 0.5 }}
+                    className="font-heading mt-6 text-center text-[clamp(2rem,6vw,4.5rem)] leading-[0.95] tracking-tight"
+                >
+                    <span className="shimmer-text">Siddhant Wani</span>
+                </motion.h1>
 
-            {/* Quick stats under name */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.35 }}
-                className="mb-8 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500 z-10"
-            >
-                <span className="flex items-center gap-1.5">
-                    📍 Pune, India
-                </span>
-                <span className="hidden sm:inline text-white/10">|</span>
-                <span className="flex items-center gap-1.5">
-                    🎓 BE — AI & Data Science
-                </span>
-                <span className="hidden sm:inline text-white/10">|</span>
-                <span className="flex items-center gap-1.5">
-                    🏆 Expert on Codeforces
-                </span>
-            </motion.div>
+                {/* Role line */}
+                <motion.p
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, ease: EASE_OUT_EXPO, delay: 0.7 }}
+                    className="mt-4 text-center text-xs font-medium uppercase tracking-[0.4em] text-[var(--fg-soft)] sm:text-sm"
+                >
+                    Full-Stack Engineer&nbsp; <span className="text-[var(--fg-dim)]">//</span> &nbsp;Competitive Programmer
+                </motion.p>
 
-            {/* Available badge */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="mb-10 flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 backdrop-blur-md z-10"
-            >
-                <span className="relative flex h-2.5 w-2.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
-                </span>
-                Available for opportunities
-            </motion.div>
-
-            {/* Social Icons — colorful */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                className="flex items-center gap-4 z-10"
-            >
-                {socials.map((social) => (
-                    <a
-                        key={social.label}
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={social.label}
-                        className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-lg transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:scale-110 backdrop-blur-sm"
-                        style={{ color: social.color }}
-                    >
-                        {social.icon}
-                    </a>
-                ))}
-            </motion.div>
+                {/* Mobile-only socials row */}
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:hidden">
+                    {socials.map((s) => (
+                        <a
+                            key={s.label}
+                            href={s.href}
+                            target={s.href.startsWith("http") ? "_blank" : undefined}
+                            rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                            aria-label={s.label}
+                            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg-elev)]/70 text-[var(--fg-soft)] backdrop-blur"
+                        >
+                            {s.icon}
+                        </a>
+                    ))}
+                </div>
+            </div>
         </section>
     );
 }
