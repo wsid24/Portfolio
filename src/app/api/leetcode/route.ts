@@ -32,6 +32,11 @@ export async function GET() {
                     startTime
                 }
             }
+            recentAcSubmissionList(username: "w_SiD24", limit: 1) {
+                title
+                titleSlug
+                timestamp
+            }
         }`;
 
         const res = await fetch("https://leetcode.com/graphql", {
@@ -52,6 +57,7 @@ export async function GET() {
         const user = data.data.matchedUser;
         const contest = data.data.userContestRanking;
         const contestHistory = data.data.userContestRankingHistory || [];
+        const recentSubmissions = data.data.recentAcSubmissionList || [];
 
         // Parse submission stats
         const stats = user.submitStatsGlobal.acSubmissionNum;
@@ -85,6 +91,12 @@ export async function GET() {
             ? Math.max(...ratingHistory.map((r: { rating: number }) => r.rating))
             : (contest?.rating ? Math.round(contest.rating) : null);
 
+        const latestSolvedProblem = recentSubmissions.length > 0 ? {
+            title: recentSubmissions[0].title,
+            titleSlug: recentSubmissions[0].titleSlug,
+            timestamp: Number(recentSubmissions[0].timestamp)
+        } : null;
+
         return NextResponse.json({
             username: user.username,
             ranking: user.profile.ranking,
@@ -98,6 +110,7 @@ export async function GET() {
             hardSolved,
             heatmap,
             ratingHistory,
+            latestSolvedProblem,
         });
     } catch (error) {
         console.error("LeetCode API error:", error);
@@ -114,6 +127,7 @@ export async function GET() {
             hardSolved: 160,
             heatmap: {},
             ratingHistory: [],
+            latestSolvedProblem: null,
         });
     }
 }

@@ -7,7 +7,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
     return (
         <div className="relative z-10 min-h-screen">
-            <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
                 {children}
             </div>
         </div>

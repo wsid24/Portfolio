@@ -1,75 +1,70 @@
 "use client";
-
+import React from "react";
 import {
-    SiCplusplus, SiPython, SiJavascript, SiReact, SiNextdotjs,
-    SiNodedotjs, SiExpress, SiSocketdotio, SiMongodb,
-    SiPostgresql, SiMysql, SiRedis, SiDocker, SiFastapi,
-    SiLangchain, SiElasticsearch, SiVercel, SiGit, SiSpringboot
+  SiReact,
+  SiNextdotjs,
+  SiTypescript,
+  SiTailwindcss,
+  SiNodedotjs,
+  SiPython,
+  SiCplusplus,
+  SiFramer,
+  SiFirebase,
+  SiMongodb,
+  SiPostgresql,
+  SiDocker,
 } from "react-icons/si";
-import { FaJava, FaShieldAlt, FaBrain } from "react-icons/fa";
 
-const items: { name: string; icon: React.ReactNode }[] = [
-    { name: "C++", icon: <SiCplusplus /> },
-    { name: "Python", icon: <SiPython /> },
-    { name: "JavaScript", icon: <SiJavascript /> },
-    { name: "Java", icon: <FaJava /> },
-    { name: "React", icon: <SiReact /> },
-    { name: "Next.js", icon: <SiNextdotjs /> },
-    { name: "Node.js", icon: <SiNodedotjs /> },
-    { name: "Express", icon: <SiExpress /> },
-    { name: "FastAPI", icon: <SiFastapi /> },
-    { name: "Spring Boot", icon: <SiSpringboot /> },
-    { name: "Socket.IO", icon: <SiSocketdotio /> },
-    { name: "LangChain", icon: <SiLangchain /> },
-    { name: "LangGraph", icon: <FaBrain /> },
-    { name: "MongoDB", icon: <SiMongodb /> },
-    { name: "PostgreSQL", icon: <SiPostgresql /> },
-    { name: "MySQL", icon: <SiMysql /> },
-    { name: "Redis", icon: <SiRedis /> },
-    { name: "Elasticsearch", icon: <SiElasticsearch /> },
-    { name: "Docker", icon: <SiDocker /> },
-    { name: "Git", icon: <SiGit /> },
-    { name: "Vercel", icon: <SiVercel /> },
-    { name: "OWASP Top 10", icon: <FaShieldAlt /> },
+const TECH_STACK = [
+  { name: "React", icon: SiReact },
+  { name: "Next.js", icon: SiNextdotjs },
+  { name: "TypeScript", icon: SiTypescript },
+  { name: "Tailwind CSS", icon: SiTailwindcss },
+  { name: "Node.js", icon: SiNodedotjs },
+  { name: "Python", icon: SiPython },
+  { name: "C++", icon: SiCplusplus },
+  { name: "Framer Motion", icon: SiFramer },
+  { name: "Firebase", icon: SiFirebase },
+  { name: "MongoDB", icon: SiMongodb },
+  { name: "PostgreSQL", icon: SiPostgresql },
+  { name: "Docker", icon: SiDocker },
 ];
 
-function Row() {
-    return (
-        <ul className="flex shrink-0 items-center gap-10 px-5">
-            {items.map((it) => (
-                <li
-                    key={it.name}
-                    className="flex items-center gap-2 text-sm text-[var(--fg-faint)] transition-colors hover:text-[var(--fg)]"
-                >
-                    <span className="text-base">{it.icon}</span>
-                    <span className="tracking-wide">{it.name}</span>
-                </li>
-            ))}
-        </ul>
-    );
-}
-
 export default function TechMarquee() {
-    return (
-        <div className="relative my-16 w-full overflow-hidden border-y border-[var(--border)] py-5 fade-mask-x">
-            <style>{`
-                @keyframes marquee-scroll {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
-                }
-                .marquee-track {
-                    display: flex;
-                    width: max-content;
-                    animation: marquee-scroll 45s linear infinite;
-                }
-                .marquee-track:hover {
-                    animation-play-state: paused;
-                }
-            `}</style>
-            <div className="marquee-track">
-                <Row />
-                <Row />
-            </div>
-        </div>
-    );
+  const row1Stack = [...TECH_STACK];
+  const row2Stack = [...TECH_STACK].reverse();
+
+  // Duplicating to create seamless marquee loop
+  const row1 = [...row1Stack, ...row1Stack, ...row1Stack];
+  const row2 = [...row2Stack, ...row2Stack, ...row2Stack];
+
+  return (
+    <div className="w-full border-y border-[var(--border)] py-6 fade-mask-x overflow-hidden flex flex-col gap-6 bg-transparent">
+      {/* Row 1: Left scrolling */}
+      <div className="flex w-max marquee-track-left">
+        {row1.map((tech, i) => (
+          <div
+            key={`r1-${i}`}
+            className="group flex w-48 flex-none items-center justify-center gap-3 px-4 transition-colors duration-300 hover:text-[var(--accent)] text-[var(--fg-dim)]"
+          >
+            <tech.icon className="text-xl transition-transform duration-300 group-hover:scale-110 group-hover:text-current" />
+            <span className="text-sm font-medium tracking-wide">{tech.name}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Row 2: Right scrolling */}
+      <div className="flex w-max marquee-track-right">
+        {row2.map((tech, i) => (
+          <div
+            key={`r2-${i}`}
+            className="group flex w-48 flex-none items-center justify-center gap-3 px-4 transition-colors duration-300 hover:text-[var(--accent)] text-[var(--fg-dim)]"
+          >
+            <tech.icon className="text-xl transition-transform duration-300 group-hover:scale-110 group-hover:text-current" />
+            <span className="text-sm font-medium tracking-wide">{tech.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
