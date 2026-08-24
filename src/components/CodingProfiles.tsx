@@ -30,6 +30,7 @@ interface CodeforcesData {
     rank: string;
     maxRank: string;
     contests: number;
+    solved?: number;
     ratingHistory: { contestName: string; newRating: number; timestamp: number }[];
 }
 
@@ -50,6 +51,7 @@ interface AtCoderData {
     currentRating: number;
     maxRating: number;
     contests: number;
+    solved?: number;
     ratingHistory: { contestName: string; rating: number; timestamp: number }[];
 }
 
