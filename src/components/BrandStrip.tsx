@@ -12,6 +12,7 @@ const PLATFORMS = [
     icon: SiLeetcode,
     bgHover: "hover:bg-[#FFA116]/10",
     borderHover: "group-hover:border-[#FFA116]",
+    href: "https://leetcode.com/u/w_SiD24/",
   },
   {
     id: "codeforces",
@@ -21,6 +22,7 @@ const PLATFORMS = [
     icon: SiCodeforces,
     bgHover: "hover:bg-[#318CE7]/10",
     borderHover: "group-hover:border-[#318CE7]",
+    href: "https://codeforces.com/profile/w_SiD24",
   },
   {
     id: "codechef",
@@ -30,6 +32,7 @@ const PLATFORMS = [
     icon: SiCodechef,
     bgHover: "hover:bg-[#5B4638]/10",
     borderHover: "group-hover:border-[#5B4638]",
+    href: "https://www.codechef.com/users/who_is_sid",
   },
   {
     id: "atcoder",
@@ -39,6 +42,7 @@ const PLATFORMS = [
     customIcon: true,
     bgHover: "hover:bg-[#FFFFFF]/10",
     borderHover: "group-hover:border-[#FFFFFF]",
+    href: "https://atcoder.jp/users/w_SiD24",
   },
   {
     id: "metahackercup",
@@ -48,6 +52,7 @@ const PLATFORMS = [
     icon: SiMeta,
     bgHover: "hover:bg-[#0668E1]/10",
     borderHover: "group-hover:border-[#0668E1]",
+    href: "https://www.facebook.com/codingcompetitions/hacker-cup",
   },
 ];
 
@@ -76,8 +81,11 @@ export default function BrandStrip() {
           className="flex flex-wrap justify-center gap-6"
         >
           {PLATFORMS.map((platform) => (
-            <motion.div
+            <motion.a
               key={platform.id}
+              href={platform.href}
+              target="_blank"
+              rel="noopener noreferrer"
               variants={itemVariants}
               className={`group relative flex items-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-glass)] px-6 py-4 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 ${platform.bgHover}`}
             >
@@ -96,7 +104,7 @@ export default function BrandStrip() {
                 )}
               </div>
               <div className="flex flex-col gap-1">
-                <span className="font-heading text-lg font-bold text-[var(--fg)]">
+                <span className="font-heading text-lg font-bold text-[var(--fg)] group-hover:text-[var(--accent)] transition-colors">
                   {platform.name}
                 </span>
                 <span
@@ -106,7 +114,7 @@ export default function BrandStrip() {
                   {platform.badge}
                 </span>
               </div>
-            </motion.div>
+            </motion.a>
           ))}
         </motion.div>
       </div>
