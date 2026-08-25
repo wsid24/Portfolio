@@ -52,7 +52,7 @@ const PLATFORMS = [
     icon: SiMeta,
     bgHover: "hover:bg-[#0668E1]/10",
     borderHover: "group-hover:border-[#0668E1]",
-    href: "https://www.facebook.com/codingcompetitions/hacker-cup",
+    href: "https://drive.google.com/file/d/1fyfoUT58o77GQvvdOLx5EOk-yZCI_JSN/view",
   },
 ];
 
